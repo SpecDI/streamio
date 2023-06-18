@@ -1,0 +1,2 @@
+add_subdirectory(streamio_server)
+add_subdirectory(streamio_server_lib)

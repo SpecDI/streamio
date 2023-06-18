@@ -20,13 +20,13 @@ endif()
 include(${Catch2_SOURCE_DIR}/extras/Catch.cmake)
 
 # Provide a simple smoke test to make sure that the CLI works and can display a --help message
-add_test(NAME cli.has_help COMMAND intro --help)
+add_test(NAME cli.has_help COMMAND streamio_server --help)
 
 # Provide a test to verify that the version being reported from the application
 # matches the version given to CMake. This will be important once you package
 # your program. Real world shows that this is the kind of simple mistake that is easy
 # to make, but also easy to test for.
-add_test(NAME cli.version_matches COMMAND intro --version)
+add_test(NAME cli.version_matches COMMAND streamio_server --version)
 set_tests_properties(cli.version_matches PROPERTIES PASS_REGULAR_EXPRESSION "${PROJECT_VERSION}")
 
 add_executable(tests tests.cpp)
@@ -34,8 +34,10 @@ target_link_libraries(
   tests
   PRIVATE myproject::myproject_warnings
           myproject::myproject_options
-          myproject::sample_library
+          streamio_server_lib
           Catch2::Catch2WithMain)
+
+target_include_directories(tests PRIVATE "${PROJECT_SOURCE_DIR}/../src/streamio_server/streamio_server_lib")
 
 if(WIN32 AND BUILD_SHARED_LIBS)
   add_custom_command(
@@ -66,8 +68,9 @@ target_link_libraries(
   constexpr_tests
   PRIVATE myproject::myproject_warnings
           myproject::myproject_options
-          myproject::sample_library
+          streamio_server_lib
           Catch2::Catch2WithMain)
+target_include_directories(constexpr_tests PRIVATE "${PROJECT_SOURCE_DIR}/../src/streamio_server/streamio_server_lib")
 
 catch_discover_tests(
   constexpr_tests
@@ -89,9 +92,10 @@ target_link_libraries(
   relaxed_constexpr_tests
   PRIVATE myproject::myproject_warnings
           myproject::myproject_options
-          myproject::sample_library
+          streamio_server_lib
           Catch2::Catch2WithMain)
 target_compile_definitions(relaxed_constexpr_tests PRIVATE -DCATCH_CONFIG_RUNTIME_STATIC_REQUIRE)
+target_include_directories(relaxed_constexpr_tests PRIVATE "${PROJECT_SOURCE_DIR}/../src/streamio_server/streamio_server_lib")
 
 catch_discover_tests(
   relaxed_constexpr_tests
